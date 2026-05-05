@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 /**
  * TODO: Define Todo schema
@@ -16,14 +16,35 @@ import mongoose from "mongoose";
  */
 
 const todoSchema = new mongoose.Schema(
-  {
-    // Your schema fields here
-  },
-  {
-    // Schema options here
-  }
+    {
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+            minlength: 3,
+            maxlength: 120,
+        },
+        completed: { type: Boolean, default: false },
+        priority: {
+            type: String,
+            enum: ["low", "medium", "high"],
+            default: "medium",
+        },
+        tags: {
+            type: [String],
+            maxLength: 10,
+            default: [],
+        },
+        dueDate: { type: Date, required: false },
+    },
+    {
+        timestamps: true,
+    },
 );
 
 // TODO: Add index
+todoSchema.index({ completed: 1, createdAt: -1 });
 
 // TODO: Create and export the Todo model
+const Todo = mongoose.model("Todo", todoSchema);
+export { Todo };
